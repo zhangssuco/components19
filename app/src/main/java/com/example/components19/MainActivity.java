@@ -3,6 +3,9 @@ package com.example.components19;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -49,17 +52,17 @@ public class MainActivity extends AppCompatActivity {
     public void click_handler(View v)
     {
         startService(new Intent(getBaseContext(), MyService.class));
-
     }
+
 
     public void selectimage_handler(View v)
     {
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Toast.makeText(this, preferences.getString("Time", ""), Toast.LENGTH_SHORT).show();
 
-        //pickFromGallery();
-        Intent intent=new Intent("com.example.components19.CUSTOM_INTENT");
+        pickFromGallery();
 
+        Intent intent=new Intent("com.example.components19.CUSTOM_INTENT");
         sendBroadcast(intent);
 
     }
@@ -72,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
         //We pass an extra array with the accepted mime types. This will ensure only components with these MIME types as targeted.
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        Toast.makeText(this, "before picked", Toast.LENGTH_SHORT).show();
+
         // Launching the Intent
-        startActivityForResult(intent, GALLERY_REQUEST_CODE);
+        //startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
 
     private static final int GALLERY_REQUEST_CODE = 100; //Define a new constant.
@@ -81,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode,int resultCode,Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         // Result code is RESULT_OK only if the user selects an Image
+        Toast.makeText(this, "after picked", Toast.LENGTH_SHORT).show();
+
         if (resultCode == Activity.RESULT_OK)
             switch (requestCode) {
                 case GALLERY_REQUEST_CODE:

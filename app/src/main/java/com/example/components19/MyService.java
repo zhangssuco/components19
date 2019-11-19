@@ -23,20 +23,41 @@ public class MyService extends Service {
         return null;
     }
 
+    void update()
+    {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String mesg = "Powered on" + timeStamp;
+        editor.putString("Time: ", preferences.getString("Time", "") + "\n" + mesg);
+        //editor.apply();
+        editor.commit();
+
+
+    }
+    long start;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     @Override
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO do something useful Recommended by google instead of onStart()
         // finding the time after the operation is executed
-        final long start = System.currentTimeMillis();
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final SharedPreferences.Editor editor = preferences.edit();
+        performservice();
         Toast.makeText(getApplicationContext(), "services", Toast.LENGTH_LONG).show();
-        //finding the time difference and converting it into seconds
-        //createNotification();
+       return super.onStartCommand(intent, flags, startId);
+}
+
+
+void performservice()
+{
 
                 /*
         // something wrong with this thread
+        start = System.currentTimeMillis();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = preferences.edit();
+        //update();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,35 +108,12 @@ public class MyService extends Service {
 */
 
 
-        return super.onStartCommand(intent, flags, startId);
-}
 
+}
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
-    private void createNotification() {
-        // Prepare intent which is triggered if the
-        // notification is selected
-        Intent intent = new Intent(this, null);
-        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
-
-        // Build notification
-        // Actions are just fake
-        Notification noti = new Notification.Builder(this)
-                .setContentTitle("New mail from " + "test@gmail.com")
-                .setContentText("Subject").setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentIntent(pIntent)
-                .addAction(R.drawable.ic_launcher_background, "Call", pIntent)
-                .addAction(R.drawable.ic_launcher_background, "More", pIntent)
-                .addAction(R.drawable.ic_launcher_background, "And more", pIntent).build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // hide the notification after its selected
-        noti.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, noti);
-
-    }
 
 }
